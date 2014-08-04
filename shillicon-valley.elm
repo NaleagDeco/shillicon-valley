@@ -1,5 +1,7 @@
 module ShilliconValley where
 
+import Color
+import Graphics.Collage
 import Window
 import List
 
@@ -79,7 +81,8 @@ Task: redefine `display` to use the GameState you defined in part 2.
 -}
 
 display : (Int,Int) -> GameState -> Element
-display (w,h) gameState = asText gameState
+display (w, h) _ = Graphics.Collage.collage w h
+                   <| [filled Color.green <| Graphics.Collage.circle 10]
 
 
 {-- That's all folks!
