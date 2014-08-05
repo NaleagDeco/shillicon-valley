@@ -1,7 +1,7 @@
 module ShilliconValley where
 
 import Color
-import Graphics.Collage
+import Graphics.Collage as GC
 import Window
 import List
 
@@ -81,8 +81,14 @@ Task: redefine `display` to use the GameState you defined in part 2.
 -}
 
 display : (Int,Int) -> GameState -> Element
-display (w, h) _ = Graphics.Collage.collage w h
-                   <| [filled Color.green <| Graphics.Collage.circle 10]
+display (w, h) state = let numPetals = List.length state.petals
+                        in GC.collage w h
+                               <| List.map
+                                      (\(n,r) -> GC.moveX (toFloat (25 * n)) (petal r))
+                                      <| List.zip [0..numPetals-1] state.petals
+
+petal : Float -> GC.Form
+petal r = GC.filled Color.green <| GC.circle r
 
 
 {-- That's all folks!
