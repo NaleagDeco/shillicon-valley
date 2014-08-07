@@ -84,11 +84,17 @@ display : (Int,Int) -> GameState -> Element
 display (w, h) state = let numPetals = List.length state.petals
                         in GC.collage w h
                                <| List.map
-                                      (\(n,r) -> GC.moveX (toFloat (25 * n)) (petal r))
+                                      (\(n,r) -> GC.move (petalNumToXY n) <| petal r)
                                       <| List.zip [0..numPetals-1] state.petals
 
 petal : Float -> GC.Form
 petal r = GC.filled Color.green <| GC.circle r
+
+petalNumToXY : Int -> (Float, Float)
+petalNumToXY n = let row = n `div` 8
+                     col = n `mod` 8
+                 in ((toFloat col) * 25.0, (toFloat row) * 25.0)
+
 
 
 {-- That's all folks!
