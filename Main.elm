@@ -1,10 +1,11 @@
-module ShilliconValley where
+module Main where
 
 import Color
 import Graphics.Collage as GC
 import Window
 import List
 
+import PetalBoard as PB
 {-- Part 1: Model the user input
 
 What information do you need to represent all relevant user input?
@@ -80,20 +81,23 @@ Task: redefine `display` to use the GameState you defined in part 2.
 
 -}
 
-display : (Int,Int) -> GameState -> Element
+display : (number, number) -> GameState -> Element
 display (w, h) state = let numPetals = List.length state.petals
                         in GC.collage w h
                                <| List.map
-                                      (\(n,r) -> GC.move (petalNumToXY n) <| petal r)
+                                      (\(n,r) -> GC.move (petalNumToXY (w,h) n) <| petal r)
                                       <| List.zip [0..numPetals-1] state.petals
 
 petal : Float -> GC.Form
 petal r = GC.filled Color.green <| GC.circle r
 
-petalNumToXY : Int -> (Float, Float)
-petalNumToXY n = let row = n `div` 8
-                     col = n `mod` 8
-                 in ((toFloat col) * 25.0, (toFloat row) * 25.0)
+petalNumToXY : (Int, Int) -> Int -> (Float, Float)
+petalNumToXY d n = let row = n `div` 8
+                       col = n `mod` 8
+                       boardOrigin = PB.boardBottomLeft d
+                       left = (fst boardOrigin) + (toFloat col) * 25.0
+                       bottom = (snd boardOrigin) + (toFloat row) * 25.0
+                   in (left, bottom)
 
 
 
