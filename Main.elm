@@ -41,10 +41,6 @@ defaultGame = { objects = [] }
 
 -}
 
-type Dimension = Int
-dimensions: (Dimension, Dimension)
-dimensions = (,) 8 5
-
 type Radius = Float
 
 petalStart: Radius
@@ -54,7 +50,7 @@ type GameState = { petals: [Radius] }
 
 defaultGame : GameState
 defaultGame = { petals = List.repeat
-                         (fst(dimensions) * snd(dimensions))
+                         (fst(PB.dimensions) * snd(PB.dimensions))
                          petalStart
               }
 
@@ -85,21 +81,11 @@ display : (number, number) -> GameState -> Element
 display (w, h) state = let numPetals = List.length state.petals
                         in GC.collage w h
                                <| List.map
-                                      (\(n,r) -> GC.move (petalNumToXY (w,h) n) <| petal r)
+                                      (\(n,r) -> GC.move (PB.petalNumToXY (w,h) n) <| petal r)
                                       <| List.zip [0..numPetals-1] state.petals
 
 petal : Float -> GC.Form
 petal r = GC.filled Color.green <| GC.circle r
-
-petalNumToXY : (Int, Int) -> Int -> (Float, Float)
-petalNumToXY d n = let row = n `div` 8
-                       col = n `mod` 8
-                       boardOrigin = PB.boardBottomLeft d
-                       left = (fst boardOrigin) + (toFloat col) * 25.0
-                       bottom = (snd boardOrigin) + (toFloat row) * 25.0
-                   in (left, bottom)
-
-
 
 {-- That's all folks!
 
