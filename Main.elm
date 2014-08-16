@@ -2,6 +2,7 @@ module Main where
 
 import Color
 import Graphics.Collage as GC
+import Graphics.Element as GE
 import Window
 import List
 
@@ -41,12 +42,12 @@ defaultGame = { objects = [] }
 
 -}
 
-type Radius = Float
+type Percentage = Int
 
-petalStart: Radius
-petalStart = 10.0
+petalStart: Percentage
+petalStart = 100
 
-type GameState = { petals: [Radius] }
+type GameState = { petals: [Percentage] }
 
 defaultGame : GameState
 defaultGame = { petals = List.repeat
@@ -77,11 +78,14 @@ Task: redefine `display` to use the GameState you defined in part 2.
 
 -}
 
-display : (number, number) -> GameState -> Element
-display (w, h) state = let numPetals = List.length state.petals
+display : (Int, Int) -> GameState -> Element
+display (w, h) state = let boardSize = PB.boardSize (w,h)
+                           boardOrigin = PB.boardBottomLeft (w,h)
+                           numPetals = List.length state.petals
+                           cellSize = PB.cellSize boardSize PB.dimensions
                         in GC.collage w h
                                <| List.map
-                                      (\(n,r) -> GC.move (PB.petalNumToXY (w,h) n) <| petal r)
+                                      (\(n,r) -> GC.move (PB.petalNumToXY cellSize boardOrigin n) <| petal <| PB.petalSize cellSize r)
                                       <| List.zip [0..numPetals-1] state.petals
 
 petal : Float -> GC.Form
